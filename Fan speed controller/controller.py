@@ -19,10 +19,10 @@ while True:
     rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     output = hands.process(rgb_image)
 
-    hands = output.multi_hand_landmarks
+    hand_landmarks = output.multi_hand_landmarks
 
-    if hands:
-        for mark in hands:
+    if hand_landmarks:
+        for mark in hand_landmarks:
             draw.draw_landmarks(frame, mark)
             landmarks = mark.landmark
 
@@ -48,7 +48,10 @@ while True:
                     print(velocity)
                     
                     v = str(velocity)
-                    arduino.write(v.encode('utf-8'))
+                    if arduino.is_open:
+                        arduino.write(v.encode('utf-8'))
+                    else:
+                        print("arduino is not availale")
                 else:
                     if velocity == 0: velocity += 0
                     else: velocity -= 1
@@ -56,7 +59,11 @@ while True:
                     print(velocity)
                     
                     v = str(velocity)
-                    arduino.write(v.encode('utf-8'))
+
+                    if arduino.is_open:
+                        arduino.write(v.encode('utf-8'))
+                    else:
+                        print("arduino is not available")
 
     cv2.imshow("Camera", frame)
 
