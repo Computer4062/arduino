@@ -1,5 +1,5 @@
 #include <LiquidCrystal.h>
-#define MORSE_INPUT_PIN 2
+#define MORSE_INPUT_PIN 7
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 const int contrast = 60;
@@ -16,6 +16,9 @@ void setup(){
   analogWrite(6, contrast);
 
   pinMode(MORSE_INPUT_PIN, INPUT);
+
+  pinMode(9, OUTPUT);
+  digitalWrite(9, HIGH);
 }
 
 void loop(){
@@ -24,26 +27,30 @@ void loop(){
 
   if (input == HIGH){
     String code = "";
+      while(input == HIGH){
+        delay(5);
+        input = digitalRead(MORSE_INPUT_PIN);
+        if(input == LOW){
+          code += ".";
+          delay(DOT_DURATION);
 
-    while(input == HIGH){
-      delay(5);
-      input = digitalRead(MORSE_INPUT_PIN);
+          lcd.setCursor(0, 1);
+          lcd.print(".");
+        }else{
+          code += '-';
+          delay(DASH_DURATION);
 
-      if(input == LOW){
-        code += ".";
-        delay(DOT_DURATION);
-      }else{
-        code += '-';
-        delay(DASH_DURATION);
+          lcd.setCursor(0, 1);
+          lcd.print("-");
+        }
+        input = digitalRead(MORSE_INPUT_PIN);
       }
-    }
 
     for (int i = 0; i < 36; i++){
       if(strcmp(code.c_str(), ENGCODE[i]) == 0){
         char letter = 'A' + i;
-        count += 1;
 
-        lcd.setCursor(count, 0);
+        lcd.setCursor(0, 0);
         lcd.print(letter);
 
         break;
