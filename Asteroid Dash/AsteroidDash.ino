@@ -1,6 +1,6 @@
 /*
   ASTEROID DASH
-  Your spaceship that was heading for Mars and missed it's trajectory and is now heading inside the asteroid belt.
+  Your spaceship was heading for Mars and missed it's trajectory and is now entering the asteroid belt.
   Take control of your spaceship and avoid a collision!
 */
 
