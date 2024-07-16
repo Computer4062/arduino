@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles.css" type="text/css" />
+	<title>TSTAR Add code</title>
+</head>
+<body>
+	<nav>
+		<ul>
+			<li><a href="index.html">Home</a></li>
+			<li><a href="Code.html">Code</a></li>
+			<li><a href="Manual.html">Manual</a></li>
+
+			<h1 id="heading">TSTAR</h1>
+		</ul>
+	</nav>
+	<main>
+		<div class="clicked-code-block">
+			<h2>Add tasks Page</h2>
+			<img class="clicked-code-img" src="Images/Add.JPG" alt="Add" />
+			<img class="clicked-code-img" src="Images/AddNotify.JPG" alt="AddNotify" />
+		</div>
+
+		<pre>
+		<code>
+		void Interface_AddTasks()
+		{
+			// If tasks can be added 0 will be returned
+			if(Functions_AddTasks() == 0)
+			{
+				Functions_LCD.createChar(0, Symbols_upArrow);
+
+				// pointers
+				switch(Functions_pointer)
+				{
+				// point to hours
+				case 0:
+				{
+					Functions_LCD.setCursor(3, 1);
+					Functions_LCD.write(byte(0));
+					Functions_LCD.setCursor(4, 1);
+					Functions_LCD.write(byte(0));
+
+					break;
+				}
+
+				// point to minutes
+				case 1:
+				{
+					Functions_LCD.setCursor(6, 1);
+					Functions_LCD.write(byte(0));
+					Functions_LCD.setCursor(7, 1);
+					Functions_LCD.write(byte(0));
+
+					break;
+				}
+
+				// point to seconds
+				case 2:
+				{
+					Functions_LCD.setCursor(9, 1);
+					Functions_LCD.write(byte(0));
+					Functions_LCD.setCursor(10, 1);
+					Functions_LCD.write(byte(0));
+
+					break;
+				}
+
+				// point to AM/PM
+				case 3:
+				{
+					Functions_LCD.setCursor(11, 1);
+					Functions_LCD.write(byte(0));
+					Functions_LCD.setCursor(12, 1);
+					Functions_LCD.write(byte(0));
+
+					break;
+				}
+				}
+
+				/*
+				Display data like task number and task time
+				*/
+				Functions_LCD.setCursor(0, 0);
+
+				uint8_t index = 0;
+				for(int i = 0; i < 6; i++)
+				{
+				if(Functions_tasks[i] == "0")
+				{
+					index = i;
+					break;
+				}
+				}
+
+				Functions_LCD.print("T" + String(index) + " " + Functions_newTime + "  ");
+			}
+		}
+
+
+		bool Functions_AddTasks()
+		{
+			// If all tasks are set then donot accept any more tasks
+			if(Functions_tasks[5] == "0")
+			{
+				// Button controls
+				Buttons_Update();
+				switch(Buttons_ReturnPressedButton())
+				{
+				// Add the new task
+				case SELECT_BTN:
+				{
+					Buttons_ResetReturnedButton();
+					Functions_LCD.clear();
+
+					// Iterate throught the for loop and add the task at an available position
+					for(int i = 0; i < 6; i++)
+					{
+					if(Functions_tasks[i] == "0")
+					{
+						// Add task
+						Functions_tasks[i] = Functions_newTime;
+
+						// Redirrect them to home page
+						Functions_currentPage = HOME;
+
+						// Reset variables
+						Functions_scrollPage = 0;
+						Functions_pointer = 0;
+						resetRinger = true;
+
+						break;
+					}
+					}
+
+					break;
+				}
+
+				// Count up
+				case UP_BTN:
+				{
+					TimeCounter(UP_BTN);
+					break;
+				}
+
+				// Count down
+				case DOWN_BTN:
+				{
+					TimeCounter(DOWN_BTN);
+					break;
+				}
+
+				// Move the pointer
+				case RIGHT_BTN:
+				{
+					TimeCounter(RIGHT_BTN);
+					break;
+				}
+				}
+
+				return 0;
+			}
+			// If all 6 tasks are taken
+			else
+			{
+				// Notify the user
+				Functions_LCD.setCursor(0, 0);
+				Functions_LCD.print("YOU CAN ONLY");
+				Functions_LCD.setCursor(0, 1);
+				Functions_LCD.print("HAVE 6 TASKS");
+
+				// Button controls
+				Buttons_Update();
+				switch(Buttons_ReturnPressedButton())
+				{
+				// Go to Home page
+				case RIGHT_BTN:
+				{
+					Buttons_ResetReturnedButton();
+					Functions_LCD.clear();
+					Functions_currentPage = HOME;
+
+					break;
+				}
+				}
+
+				return 1;
+			}
+		}
+
+
+		// Call when ever some thing needs to be counted
+		void TimeCounter(const uint8_t btn)
+		{
+			switch(btn)
+			{
+				// Count up
+				case UP_BTN:
+				{
+				Buttons_ResetReturnedButton();
+
+				// Go through the location of the arrow to check what to increase
+				switch(Functions_pointer)
+				{
+					// Pointing at hours
+					case 0:
+					{
+					// Get the hours
+					String h = String(Functions_newTime[0]) + String(Functions_newTime[1]);
+					uint8_t hours = h.toInt();
+
+					// Increment the hours
+					if(hours != 12) hours++;
+					else hours = 1;
+
+					// Write the new string
+					h = "";
+					if(hours < 10) h = "0" + String(hours);
+					else h = String(hours);
+
+					Functions_newTime[0] = h[0];
+					Functions_newTime[1] = h[1];
+
+					break;
+					}
+
+					// Pointing at minutes
+					case 1:
+					{
+					// Get the minutes
+					String m = String(Functions_newTime[3]) + String(Functions_newTime[4]);
+					uint8_t minutes = m.toInt();
+
+					// Increment the minutes
+					if(minutes != 59) minutes++;
+					else minutes = 0;
+
+					// Write the new string
+					m = "";
+					if(minutes < 10) m = "0" + String(minutes);
+					else m = String(minutes);
+
+					Functions_newTime[3] = m[0];
+					Functions_newTime[4] = m[1];
+
+					break;
+					}
+
+					// Pointing at seconds
+					case 2:
+					{
+					// Get the seconds
+					String s = String(Functions_newTime[6]) + String(Functions_newTime[7]);
+					uint8_t seconds = s.toInt();
+
+					// Increment the seconds
+					if(seconds != 59) seconds++;
+					else seconds = 0;
+
+					// Write the new string
+					s = "";
+					if(seconds < 10) s = "0" + String(seconds);
+					else s = String(seconds);
+
+					Functions_newTime[6] = s[0];
+					Functions_newTime[7] = s[1];
+
+					break;
+					}
+
+					// Pointing at day
+					case 3:
+					{
+					// Get the day
+					char day = Functions_newTime[8];
+
+					// Increment the seconds
+					if(day == 'P') day = 'A';
+					else day = 'P';
+
+					Functions_newTime[8] = day;
+
+					break;
+					}
+				}
+
+				break;
+				}
+
+				// Count down
+				case DOWN_BTN:
+				{
+				Buttons_ResetReturnedButton();  // Reset the button
+
+				// Go through the location of the arrow to check what to increase
+				switch(Functions_pointer)
+				{
+					// Pointing at hours
+					case 0:
+					{
+					// Get the hours
+					String h = String(Functions_newTime[0]) + String(Functions_newTime[1]);
+					uint8_t hours = h.toInt();
+
+					// Increment the hours
+					if(hours != 1) hours--;
+					else hours = 12;
+
+					// Write the new string
+					h = "";
+					if(hours < 10) h = "0" + String(hours);
+					else h = String(hours);
+
+					Functions_newTime[0] = h[0];
+					Functions_newTime[1] = h[1];
+
+					break;
+					}
+
+					// Pointing at minutes
+					case 1:
+					{
+					// Get the minutes
+					String m = String(Functions_newTime[3]) + String(Functions_newTime[4]);
+					uint8_t minutes = m.toInt();
+
+					// Increment the minutes
+					if(minutes != 0) minutes--;
+					else minutes = 59;
+
+					// Write the new string
+					m = "";
+					if(minutes < 10) m = "0" + String(minutes);
+					else m = String(minutes);
+
+					Functions_newTime[3] = m[0];
+					Functions_newTime[4] = m[1];
+
+					break;
+					}
+
+					// Pointing at seconds
+					case 2:
+					{
+					// Get the seconds
+					String s = String(Functions_newTime[6]) + String(Functions_newTime[7]);
+					uint8_t seconds = s.toInt();
+
+					// Increment the seconds
+					if(seconds != 0) seconds--;
+					else seconds = 59;
+
+					// Write the new string
+					s = "";
+					if(seconds < 10) s = "0" + String(seconds);
+					else s = String(seconds);
+
+					Functions_newTime[6] = s[0];
+					Functions_newTime[7] = s[1];
+
+					break;
+					}
+
+					// Pointing at day
+					case 3:
+					{
+					// Get the day
+					char day = Functions_newTime[8];
+
+					// Increment the seconds
+					if(day == 'P') day = 'A';
+					else day = 'P';
+
+					Functions_newTime[8] = day;
+
+					break;
+					}
+				}
+
+				break;
+				}
+
+				case RIGHT_BTN:
+				{
+				Functions_LCD.clear();
+				if(Functions_pointer != 3) Functions_pointer++;
+				else Functions_pointer = 0;
+				Buttons_ResetReturnedButton();
+				break;
+				}
+			}
+		}
+		</code>
+		</pre>
+	</main>
+</body>
+</html>

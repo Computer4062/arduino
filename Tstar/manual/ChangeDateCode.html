@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles.css" type="text/css" />
+	<title>TSTAR Change Date code</title>
+</head>
+<body>
+	<nav>
+		<ul>
+			<li><a href="index.html">Home</a></li>
+			<li><a href="Code.html">Code</a></li>
+			<li><a href="Manual.html">Manual</a></li>
+
+			<h1 id="heading">TSTAR</h1>
+		</ul>
+	</nav>
+	<main>
+		<div class="clicked-code-block">
+			<h2>Change Date Page</h2>
+			<img class="clicked-code-img" src="Images/ChangeDate.JPG" alt="ChangeDate" />
+		</div>
+
+		<pre>
+		<code>
+		void Interface_ChangeDate()
+			{
+			Functions_LCD.createChar(0, Symbols_upArrow);
+
+			// Date
+			Functions_LCD.setCursor(0, 0);
+			Functions_LCD.print("  " + Functions_newDate);
+
+			// pointers
+			switch(Functions_pointer)
+			{
+			case 0:
+			{
+				Functions_LCD.setCursor(2, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(3, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(4, 1);
+				Functions_LCD.write(byte(0));
+
+				break;
+			}
+			case 1:
+			{
+				Functions_LCD.setCursor(6, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(7, 1);
+				Functions_LCD.write(byte(0));
+
+				break;
+			}
+			case 2:
+			{
+				Functions_LCD.setCursor(9, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(10, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(11, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(12, 1);
+				Functions_LCD.write(byte(0));
+
+				break;
+			}
+			}
+
+			Functions_ChangeDate();
+		}
+
+
+		void Functions_ChangeDate()
+		{
+			// Button controls
+			Buttons_Update();
+			switch(Buttons_ReturnPressedButton())
+			{
+			// Change the date
+			case SELECT_BTN:
+			{
+				Functions_dt = clock.getDateTime(); 
+				clock.setDateTime(Functions_newDate.c_str(), clock.dateFormat("h:i:sA", Functions_dt));
+
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+				Functions_newDate = "Jan 01 2024";
+				Functions_currentPage = HOME;
+
+				break;
+			}
+
+			// Move the pointer
+			case RIGHT_BTN:
+			{
+				if(Functions_pointer != 2) Functions_pointer++;
+				else Functions_pointer = 0;
+
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+
+				break;
+			}
+
+			// Count up
+			case UP_BTN:
+			{
+				switch(Functions_pointer)
+				{
+				// Count up month
+				case 0:
+				{
+				String month = String(Functions_newDate[0]) + Functions_newDate[1] + Functions_newDate[2];
+
+				if(month == "Jan") month = "Feb";
+				else if(month == "Feb") month = "Mar";
+				else if(month == "Mar") month = "Apr";
+				else if(month == "Apr") month = "May";
+				else if(month == "May") month = "Jun";
+				else if(month == "Jun") month = "Jul";
+				else if(month == "Jul") month = "Aug";
+				else if(month == "Aug") month = "Sep";
+				else if(month == "Sep") month = "Oct";
+				else if(month == "Oct") month = "Nov";
+				else if(month == "Nov") month = "Dec";
+				else if(month == "Dec") month = "Jan";
+
+				Functions_newDate[0] = month[0];
+				Functions_newDate[1] = month[1];
+				Functions_newDate[2] = month[2];
+
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+
+				break;
+				}
+
+				// Count up day
+				case 1:
+				{
+				int day = (String(Functions_newDate[4]) + Functions_newDate[5]).toInt();
+
+				if(day != ReturnMaxDays()) day++;
+				else day = 1;
+
+				if(day < 10)
+				{
+					Functions_newDate[4] = '0';
+					Functions_newDate[5] = String(day)[0];
+				}
+				else
+				{
+					String d = String(day);
+					
+					Functions_newDate[4] = d[0];
+					Functions_newDate[5] = d[1];
+				}
+
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+
+				break;
+				}
+
+				// Count up year
+				case 2:
+				{
+				int year = (String(Functions_newDate[7]) + Functions_newDate[8] + Functions_newDate[9] + Functions_newDate[10]).toInt();
+				year++;
+
+				String y = String(year);
+
+				Functions_newDate[7] = y[0];
+				Functions_newDate[8] = y[1];
+				Functions_newDate[9] = y[2];
+				Functions_newDate[10] = y[3];
+
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+
+				break;
+				}
+				}
+
+				break;
+			}
+
+			// Count down
+			case DOWN_BTN:
+			{
+				switch(Functions_pointer)
+				{
+				// Count down month
+				case 0:
+				{
+				String month = String(Functions_newDate[0]) + Functions_newDate[1] + Functions_newDate[2];
+
+				if(month == "Jan") month = "Dec";
+				else if(month == "Dec") month = "Nov";
+				else if(month == "Nov") month = "Oct";
+				else if(month == "Oct") month = "Sep";
+				else if(month == "Sep") month = "Aug";
+				else if(month == "Aug") month = "Jul";
+				else if(month == "Jun") month = "May";
+				else if(month == "May") month = "Apr";
+				else if(month == "Apr") month = "Apr";
+				else if(month == "Mar") month = "Feb";
+				else if(month == "Feb") month = "Jan";
+
+				Functions_newDate[0] = month[0];
+				Functions_newDate[1] = month[1];
+				Functions_newDate[2] = month[2];
+
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+
+				break;
+				}
+
+				// Count down day
+				case 1:
+				{
+				int day = (String(Functions_newDate[4]) + Functions_newDate[5]).toInt();
+
+				if(day != 1) day--;
+				else day = ReturnMaxDays();
+
+				if(day < 10)
+				{
+					Functions_newDate[4] = '0';
+					Functions_newDate[5] = String(day)[0];
+				}
+				else
+				{
+					String d = String(day);
+					
+					Functions_newDate[4] = d[0];
+					Functions_newDate[5] = d[1];
+				}
+
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+
+				break;
+				}
+
+				// Count down year
+				case 2:
+				{
+				int year = (String(Functions_newDate[7]) + Functions_newDate[8] + Functions_newDate[9] + Functions_newDate[10]).toInt();
+				year--;
+
+				String y = String(year);
+
+				Functions_newDate[7] = y[0];
+				Functions_newDate[8] = y[1];
+				Functions_newDate[9] = y[2];
+				Functions_newDate[10] = y[3];
+
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+
+				break;
+				}
+				}
+
+				break;
+			}
+			}
+		}
+
+
+		int ReturnMaxDays()
+		{
+			String month = String(Functions_newDate[0]) + Functions_newDate[1] + Functions_newDate[2];
+
+			/*
+				Get the maximum days in the month depending on what month or year it is
+			*/
+			if(month == "Jan" || month == "Mar" || month == "May" || month == "Jul" || month == "Aug" || month == "Oct"|| month == "Dec") return 31;
+			else if(month == "Apr" || month == "Jun" || month == "Sep" || month == "Nov") return 30;
+			else if(atoi(String((Functions_newDate[7]) + Functions_newDate[8] + Functions_newDate[9] + Functions_newDate[10]).c_str()) % 4 == 0) return 29;
+			else return 28;
+		}
+		</code>
+		</pre>
+	</main>
+</body>
+</html>

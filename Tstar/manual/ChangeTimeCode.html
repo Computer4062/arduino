@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles.css" type="text/css" />
+	<title>TSTAR Change Time code</title>
+</head>
+<body>
+	<nav>
+		<ul>
+			<li><a href="index.html">Home</a></li>
+			<li><a href="Code.html">Code</a></li>
+			<li><a href="Manual.html">Manual</a></li>
+
+			<h1 id="heading">TSTAR</h1>
+		</ul>
+	</nav>
+	<main>
+		<div class="clicked-code-block">
+			<h2>Change Time Page</h2>
+			<img class="clicked-code-img" src="Images/ChangeTime.JPG" alt="ChangeTime" />
+		</div>
+
+		<pre>
+		<code>
+		void Interface_ChangeTime()
+		{
+			Functions_LCD.createChar(0, Symbols_upArrow);
+
+			// Time
+			Functions_LCD.setCursor(0, 0);
+			Functions_LCD.print("   " + Functions_newTime);
+
+			// pointers
+			switch(Functions_pointer)
+			{
+				case 0:
+				{
+				Functions_LCD.setCursor(3, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(4, 1);
+				Functions_LCD.write(byte(0));
+
+				break;
+				}
+
+				case 1:
+				{
+				Functions_LCD.setCursor(6, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(7, 1);
+				Functions_LCD.write(byte(0));
+
+				break;
+				}
+
+				case 2:
+				{
+				Functions_LCD.setCursor(9, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(10, 1);
+				Functions_LCD.write(byte(0));
+
+				break;
+				}
+
+				case 3:
+				{
+				Functions_LCD.setCursor(11, 1);
+				Functions_LCD.write(byte(0));
+				Functions_LCD.setCursor(12, 1);
+				Functions_LCD.write(byte(0));
+
+				break;
+				}
+			}
+
+			Functions_ChangeTime();
+		}
+
+		
+		void Functions_ChangeTime()
+		{
+			// Button controls
+			Buttons_Update();
+			switch(Buttons_ReturnPressedButton())
+			{
+				// Count up
+				case UP_BTN:
+				{
+				TimeCounter(UP_BTN);
+				break;
+				}
+
+				// Count down
+				case DOWN_BTN:
+				{
+				TimeCounter(DOWN_BTN);
+				break;
+				}
+
+				// Move the pointer
+				case RIGHT_BTN:
+				{
+				TimeCounter(RIGHT_BTN);
+				break;
+				}
+
+				// Change the time and goto Home page
+				case SELECT_BTN:
+				{
+				Functions_dt = clock.getDateTime();
+
+				/*
+					Modify the time
+				*/
+				if((String(Functions_newTime[8]) + Functions_newTime[9]) == "PM")
+				{
+					int hour = (String(Functions_newTime[0]) + Functions_newTime[1]).toInt();
+					hour += 12;
+
+					String h = String(hour);
+
+					Functions_newTime[0] = h[0];
+					Functions_newTime[1] = h[1];
+				}
+				else if((String(Functions_newTime[8]) + Functions_newTime[9] == "AM") && ((String(Functions_newTime[0]) + Functions_newTime[1]) == "12"))
+				{
+					Functions_newTime[0] = '0';
+					Functions_newTime[1] = '0';
+				}
+
+				// Set the new time
+				clock.setDateTime(clock.dateFormat("M j 20y", Functions_dt), Functions_newTime.c_str());
+
+				Functions_currentPage = HOME;
+				Functions_LCD.clear();
+				Buttons_ResetReturnedButton();
+				Functions_newTime = "12:00:00AM";
+				Functions_pointer = 0;
+
+				break;
+				}
+			}
+		}
+
+
+		// Call when ever some thing needs to be counted
+		void TimeCounter(const uint8_t btn)
+		{
+			switch(btn)
+			{
+				// Count up
+				case UP_BTN:
+				{
+				Buttons_ResetReturnedButton();
+
+				// Go through the location of the arrow to check what to increase
+				switch(Functions_pointer)
+				{
+					// Pointing at hours
+					case 0:
+					{
+					// Get the hours
+					String h = String(Functions_newTime[0]) + String(Functions_newTime[1]);
+					uint8_t hours = h.toInt();
+
+					// Increment the hours
+					if(hours != 12) hours++;
+					else hours = 1;
+
+					// Write the new string
+					h = "";
+					if(hours < 10) h = "0" + String(hours);
+					else h = String(hours);
+
+					Functions_newTime[0] = h[0];
+					Functions_newTime[1] = h[1];
+
+					break;
+					}
+
+					// Pointing at minutes
+					case 1:
+					{
+					// Get the minutes
+					String m = String(Functions_newTime[3]) + String(Functions_newTime[4]);
+					uint8_t minutes = m.toInt();
+
+					// Increment the minutes
+					if(minutes != 59) minutes++;
+					else minutes = 0;
+
+					// Write the new string
+					m = "";
+					if(minutes < 10) m = "0" + String(minutes);
+					else m = String(minutes);
+
+					Functions_newTime[3] = m[0];
+					Functions_newTime[4] = m[1];
+
+					break;
+					}
+
+					// Pointing at seconds
+					case 2:
+					{
+					// Get the seconds
+					String s = String(Functions_newTime[6]) + String(Functions_newTime[7]);
+					uint8_t seconds = s.toInt();
+
+					// Increment the seconds
+					if(seconds != 59) seconds++;
+					else seconds = 0;
+
+					// Write the new string
+					s = "";
+					if(seconds < 10) s = "0" + String(seconds);
+					else s = String(seconds);
+
+					Functions_newTime[6] = s[0];
+					Functions_newTime[7] = s[1];
+
+					break;
+					}
+
+					// Pointing at day
+					case 3:
+					{
+					// Get the day
+					char day = Functions_newTime[8];
+
+					// Increment the seconds
+					if(day == 'P') day = 'A';
+					else day = 'P';
+
+					Functions_newTime[8] = day;
+
+					break;
+					}
+				}
+
+				break;
+				}
+
+				// Count down
+				case DOWN_BTN:
+				{
+				Buttons_ResetReturnedButton();  // Reset the button
+
+				// Go through the location of the arrow to check what to increase
+				switch(Functions_pointer)
+				{
+					// Pointing at hours
+					case 0:
+					{
+					// Get the hours
+					String h = String(Functions_newTime[0]) + String(Functions_newTime[1]);
+					uint8_t hours = h.toInt();
+
+					// Increment the hours
+					if(hours != 1) hours--;
+					else hours = 12;
+
+					// Write the new string
+					h = "";
+					if(hours < 10) h = "0" + String(hours);
+					else h = String(hours);
+
+					Functions_newTime[0] = h[0];
+					Functions_newTime[1] = h[1];
+
+					break;
+					}
+
+					// Pointing at minutes
+					case 1:
+					{
+					// Get the minutes
+					String m = String(Functions_newTime[3]) + String(Functions_newTime[4]);
+					uint8_t minutes = m.toInt();
+
+					// Increment the minutes
+					if(minutes != 0) minutes--;
+					else minutes = 59;
+
+					// Write the new string
+					m = "";
+					if(minutes < 10) m = "0" + String(minutes);
+					else m = String(minutes);
+
+					Functions_newTime[3] = m[0];
+					Functions_newTime[4] = m[1];
+
+					break;
+					}
+
+					// Pointing at seconds
+					case 2:
+					{
+					// Get the seconds
+					String s = String(Functions_newTime[6]) + String(Functions_newTime[7]);
+					uint8_t seconds = s.toInt();
+
+					// Increment the seconds
+					if(seconds != 0) seconds--;
+					else seconds = 59;
+
+					// Write the new string
+					s = "";
+					if(seconds < 10) s = "0" + String(seconds);
+					else s = String(seconds);
+
+					Functions_newTime[6] = s[0];
+					Functions_newTime[7] = s[1];
+
+					break;
+					}
+
+					// Pointing at day
+					case 3:
+					{
+					// Get the day
+					char day = Functions_newTime[8];
+
+					// Increment the seconds
+					if(day == 'P') day = 'A';
+					else day = 'P';
+
+					Functions_newTime[8] = day;
+
+					break;
+					}
+				}
+
+				break;
+				}
+
+				case RIGHT_BTN:
+				{
+				Functions_LCD.clear();
+				if(Functions_pointer != 3) Functions_pointer++;
+				else Functions_pointer = 0;
+				Buttons_ResetReturnedButton();
+				break;
+				}
+			}
+		}
+		</code>
+		</pre>
+	</main>
+</body>
+</html>
