@@ -37,6 +37,8 @@
 	<li>I will also be catiouse about memory usage since the Arduino chip has a limited memory capacity</li>
 	<li>I also think I should try to implement additional functionality using a Internet connection chip that would allow me to send http requests to webservers</li>
 	<li>I would also learn to make webservers and intergrate both webserver and arduino together</li>
+	<li>I also think I should package all the projects I make instead of just leaving it as a circuit</li>
+	<li>Packaging this project has showed me that just like making the circuit packaging the product is also something that is vital, it is also exciting</li>
 	<li>The project also looks like a vehicle so Iam thinking of building a housecleaning robot or something like that</li>
 	<li>It would be great to have such a robot in a house where the robot can clean and access the internet to be intergrated with ChatGPT/Bard or other webservers</li>
 	<li>This would give it functionalities like voice recognition and image recognition, Task management, Playing songs, Reciepies, Manuals, Internet surfing, Calculations</li>
