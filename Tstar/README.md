@@ -15,10 +15,4 @@
 	<li>Like when you have some household tasks to complete and you are sharing them with others in the house</li>
 	<li>That is all personal things but can it be used in a professional environment</li>
 	<li>For small groups working on projects it can be usefull to announce break times and so on</li>
-	<li>The device is also insanely big</li>
-	<li>This is supposed to be very small and portable</li>
-	<li>In order to achieve this I believe I must learn how to make PCB's</li>
-	<li>The project also looks like a vehicle so Iam thinking of building a housecleaning robot or something like that</li>
-	<li>It would be great to have such a robot in a house where the robot can clean and access the internet to be intergrated with ChatGPT/Bard or other webservers</li>
-	<li>This would give it functionalities like voice recognition and image recognition, Task management, Playing songs, Reciepies, Manuals, Internet surfing, Calculations</li>
 </ul>
