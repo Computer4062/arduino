@@ -16,3 +16,29 @@
 	<li>That is all personal things but can it be used in a professional environment</li>
 	<li>For small groups working on projects it can be usefull to announce break times and so on</li>
 </ul>
+
+<p>24/07/2024</p>
+<p>Problems encountered</p>
+<ul>
+	<li>I had packaged the entier circuit into a box</li>
+	<li>Just now I also realized that when I set an alarm that is at AM time it does not work</li>
+	<li>This occured previously as well and I thought I had fixed it at that time</li>
+	<li>I also realized that when the Arduino program hits 64% dynamic memory or 73% program space the alarm functionality stops working</li>
+	<li>I tested this out by initializing some empty strings</li>
+	<li>I think this would work if I compared the currentTime string and the alarmTime string and then make the device ring if they are equal</li>
+	<li>I also wanted to add other features like Settings and Time Recorder but this problem prevented me from adding them</li>
+	<li>The device is also insanely big</li>
+	<li>This is supposed to be very small and portable</li>
+</ul>
+
+<p>Future projects</p>
+<ul>
+	<li>For future projects I will try to limit the use of Strings and use char* when ever it can be used</li>
+	<li>I will also be catiouse about memory usage since the Arduino chip has a limited memory capacity</li>
+	<li>I also think I should try to implement additional functionality using a Internet connection chip that would allow me to send http requests to webservers</li>
+	<li>I would also learn to make webservers and intergrate both webserver and arduino together</li>
+	<li>The project also looks like a vehicle so Iam thinking of building a housecleaning robot or something like that</li>
+	<li>It would be great to have such a robot in a house where the robot can clean and access the internet to be intergrated with ChatGPT/Bard or other webservers</li>
+	<li>This would give it functionalities like voice recognition and image recognition, Task management, Playing songs, Reciepies, Manuals, Internet surfing, Calculations</li>
+	<li>In order to achieve this I believe I must learn how to make PCB's</li>
+</ul>
