@@ -71,4 +71,4 @@ Wire the LCD using the standard `LiquidCrystal` library pinout (`RS, E, D4, D5, 
 
 
 ![prev-img-1](LCD_preview_1.PNG)
-![prev-img-2](LCD_preview_2.PNG)
+![prev-img-2](LCD_Preview_2.PNG)
